@@ -8,7 +8,7 @@ WORKDIR /go/src/app
 ADD . /go/src/app/
 RUN go mod download
 
-FROM gcr.io/distroless/static
+FROM gcr.io/distroless/static-debian11
 COPY --from=build /go/src/app /
 
 ENTRYPOINT ["./fenix"]
