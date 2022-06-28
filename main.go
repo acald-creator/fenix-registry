@@ -7,5 +7,14 @@ package main
 import "github.com/acald-creator/fenix-registry/cmd"
 
 func main() {
-	cmd.Execute()
+	// Muting this line for testing purposes
+	// cmd.PullDockerImage()
+
+	// Will not work because there is plaintext credentials
+	// cmd.PullDockerImageWithAuth()
+
+	cmd.ListDockerContainers()
+
+	// Future feature
+	// cmd.Execute()
 }
