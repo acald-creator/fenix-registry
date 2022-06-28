@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 
 	"github.com/docker/docker/api/types"
@@ -14,18 +15,22 @@ import (
 
 func ListDockerContainers() {
 	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.FromEnv)
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		panic(err)
+		log.Fatalf("Unable to get new docker client: %v", err)
 	}
 
 	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
 	if err != nil {
-		panic(err)
+		log.Printf("Unable to list containers: %v", err)
 	}
 
-	for _, container := range containers {
-		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+	if len(containers) > 0 {
+		for _, container := range containers {
+			fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+		}
+	} else {
+		log.Println("Oops! There are no containers running. Go create some containers!")
 	}
 }
 
