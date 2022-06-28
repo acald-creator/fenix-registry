@@ -1,6 +1,14 @@
-FROM gcr.io/projectsigstore/cosign:v1.9.0 as cosign-bin
+# syntax=docker/dockerfile:1
 
-# Source: https://github.com/distroless/static
-FROM ghcr.io/distroless/static:latest
-COPY --from=cosign-bin /ko-app/cosign /usr/local/bin/cosign
-ENTRYPOINT [ "cosign" ]
+ARG GO_VERSION=1.18.3
+
+FROM golang:${GO_VERSION}-bullseye as build
+
+WORKDIR /go/src/app
+ADD . /go/src/app/
+RUN go mod download
+
+FROM gcr.io/distroless/base-debian11
+COPY --from=build /go/src/app /
+
+ENTRYPOINT ["./fenix"]
